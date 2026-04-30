@@ -62,6 +62,35 @@ namespace SimplePaint
 
         private void btnSaveFile_Click(object? sender, EventArgs e)
         {
+            using SaveFileDialog sfd = new SaveFileDialog();
+            sfd.Title = "그림 저장";
+            sfd.Filter = "PNG 파일 (*.png)|*.png|JPG 파일 (*.jpg)|*.jpg|BMP 파일 (*.bmp)|*.bmp";
+            sfd.FileName = "simplepaint";
+
+            if (sfd.ShowDialog() == DialogResult.OK)
+            {
+                ImageFormat format;
+
+                if (sfd.FilterIndex == 1)
+                {
+                    format = ImageFormat.Png;
+                }
+                else if (sfd.FilterIndex == 2)
+                {
+                    format = ImageFormat.Jpeg;
+                }
+                else if (sfd.FilterIndex == 3)
+                {
+                    format = ImageFormat.Bmp;
+                }
+                else
+                {
+                    format = ImageFormat.Png;
+                }
+
+                canvasBitmap.Save(sfd.FileName, format);
+                MessageBox.Show("이미지 파일로 저장했습니다.");
+            }
         }
 
         private void picCanvas_MouseDown(object? sender, MouseEventArgs e)
