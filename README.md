@@ -62,4 +62,24 @@
 - TrackBar 값 변경 시 선 굵기가 조절될 수 있도록 설정하였다.
 
 ---
+## 3. 과제 
+
+### 실행 화면
+
+![직선 그리기](img/Assignment_2_Drawing_Line.png)
+![사각형 굵게 그리기](img/Assignment_2_Drawing_ThickRectangle.png)
+![빨간색 원 그리기](img/Assignment_2_Drawing_RedCircle.png)
+![여러 도형 그리기](img/Assignment_2_Drawing_ManyPoligon.png)
+
+### 과제 내용
+- 마우스 드래그를 이용하여 그림을 그리는 기능을 구현한다.
+- 마우스를 누른 위치부터 놓는 위치까지의 좌표를 기반으로 도형이 그려지도록 구현한다.
+- 직선, 사각형, 원을 선택하여 각각의 도형을 그릴 수 있도록 구현한다.
+- 선택된 색상과 선 굵기가 실제 도형 그리기에 반영되도록 구현한다.
+
+### 구현 내용과 기능 설명
+- PictureBox(picCanvas)에 MouseDown, MouseMove, MouseUp 이벤트를 연결하여 마우스 드래그 기반 그리기 기능을 구현하였다.
+
+---
+
 
