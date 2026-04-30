@@ -62,10 +62,10 @@
 
 ### 실행 화면
 
+![UI 컨트롤 배치](img/Assignment_1_UI_Design.png)
 ![초기화면](img/Assignment_1_initial.png)
 ![도형 선택 버튼 클릭](img/Assignment_1_PolygonSelect.png)
-![색상 ComboBox 선택](img/Assignment_1_ColorSelect.png)
-![주문 버튼](img/Assignment_1_LineWidth.png)
+![선 굵기 조절](img/Assignment_1_LineWidth.png)
 
 ### 과제 내용
 - 컨트롤을 배치하여 전체 사용자 인터페이스(UI)를 구성한다.
