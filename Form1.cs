@@ -11,7 +11,10 @@ namespace SimplePaint
         private DrawShape selectedShape = DrawShape.Line;
         private Color selectedColor = Color.Black;
         private int selectedLineWidth = 2;
-
+        private Bitmap canvasBitmap = null!;
+        private bool isDrawing = false;
+        private Point startPoint;
+        private Point currentPoint;
 
         public Form1()
         {
@@ -22,7 +25,7 @@ namespace SimplePaint
         {
             cmbColor.SelectedIndex = 0;
             SelectShape(DrawShape.Line);
-
+            CreateBlankCanvas(picCanvas.Width, picCanvas.Height);
         }
 
         private void SelectShape(DrawShape shape)
@@ -63,23 +66,64 @@ namespace SimplePaint
 
         private void picCanvas_MouseDown(object? sender, MouseEventArgs e)
         {
+            isDrawing = true;
+            startPoint = e.Location;
+            currentPoint = e.Location;
         }
 
         private void picCanvas_MouseMove(object? sender, MouseEventArgs e)
         {
-
+            if (!isDrawing) return;
+            currentPoint = e.Location;
+            picCanvas.Invalidate();
         }
 
         private void picCanvas_MouseUp(object? sender, MouseEventArgs e)
         {
-
+            if (!isDrawing) return;
+            isDrawing = false;
+            currentPoint = e.Location;
+            using Graphics g = Graphics.FromImage(canvasBitmap);
+            DrawSelectedShape(g, startPoint, currentPoint);
+            picCanvas.Invalidate();
         }
 
         private void picCanvas_Paint(object? sender, PaintEventArgs e)
         {
-
+            if (!isDrawing) return;
+            DrawSelectedShape(e.Graphics, startPoint, currentPoint);
         }
 
+        private void CreateBlankCanvas(int width, int height)
+        {
+            canvasBitmap?.Dispose();
+            canvasBitmap = new Bitmap(width, height);
+            using Graphics g = Graphics.FromImage(canvasBitmap);
+            g.Clear(Color.White);
+            picCanvas.Image = canvasBitmap;
+        }
 
+        private Rectangle GetRectangle(Point p1, Point p2)
+        {
+            return new Rectangle(Math.Min(p1.X, p2.X), Math.Min(p1.Y, p2.Y), Math.Abs(p1.X - p2.X), Math.Abs(p1.Y - p2.Y));
+        }
+
+        private void DrawSelectedShape(Graphics g, Point p1, Point p2)
+        {
+            using Pen pen = new Pen(selectedColor, selectedLineWidth);
+            Rectangle rect = GetRectangle(p1, p2);
+            switch (selectedShape)
+            {
+                case DrawShape.Line:
+                    g.DrawLine(pen, p1, p2);
+                    break;
+                case DrawShape.Rectangle:
+                    g.DrawRectangle(pen, rect);
+                    break;
+                case DrawShape.Circle:
+                    g.DrawEllipse(pen, rect);
+                    break;
+            }
+        }
     }
 }
