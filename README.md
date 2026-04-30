@@ -90,6 +90,11 @@
 ## 4. 과제 3
 
 ### 실행 화면
+![그려진 그림](img/Assignment_3_DrawnPicture.png)
+![저장 버튼 클릭](img/Assignment_3_Click_SaveButton.png)
+![저장된 이미지들](img/Assignment_3_Saved_Images.png)
+![저장된 이미지 보기](img/Assignment_3_View_SavedImages.png)
+
 
 ### 과제 내용
 - 그려진 그림을 이미지 파일로 저장하는 기능을 구현한다.
@@ -100,6 +105,10 @@
 ### 구현 내용과 기능 설명
 - 저장 버튼(btnSaveFile)에 클릭 이벤트를 연결하여 파일 저장 기능이 실행되도록 구현하였다.
 - SaveFileDialog를 사용하여 사용자가 파일 이름과 저장 위치, 파일 형식을 선택할 수 있도록 구성하였다.
+- 파일 형식 선택 항목에 PNG, JPG, BMP 형식을 추가하여 다양한 이미지 포맷으로 저장할 수 있도록 설정하였다.
+- PictureBox(picCanvas)에 표시된 이미지를 Bitmap으로 변환하여 저장 처리에 사용하였다.
+- 사용자가 선택한 파일 형식에 따라 ImageFormat(Png, Jpeg, Bmp)을 구분하여 저장하도록 구현하였다.
+- 파일 저장이 완료되면 MessageBox를 통해 “이미지 파일로 저장했습니다.”라는 안내 메시지가 출력되도록 구성하였다.
 
 ---
 ## 5. 과제 4
