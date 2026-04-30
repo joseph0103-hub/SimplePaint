@@ -114,6 +114,12 @@
 ## 5. 과제 4
 
 ### 실행 화면
+![이미지 열기](img/Assignment_4_Open_Image.png)
+![이미지 위에 도형 그리기](img/Assignment_4_Drawing_OnImage.png)
+![화면 확대](img/Assignment_4_ZoomIn.png)
+![화면 스크롤](img/Assignment_4_Scroll.png)
+![완성된 이미지를 저장](img/Assignment_4_Saved_CompletedImage.png)
+![저장된 완성 이미지 보기](img/Assignment_4_simplepaint_complete.png)
 
 
 ### 과제 내용
@@ -122,6 +128,7 @@
 - 이미지 크기에 맞게 캔버스(PictureBox)의 크기를 조정하도록 구성한다.
 - 이미지가 큰 경우 스크롤을 통해 전체 영역을 확인할 수 있도록 구현한다.
 - 확대 및 축소 기능을 통해 이미지를 다양한 크기로 볼 수 있도록 구현한다
+- 완성된 그림을 파일로 저장한다.
 
 ### 구현 내용과 기능 설명
 - 열기 버튼(btnOpenFile)에 클릭 이벤트를 연결하여 OpenFileDialog를 통해 외부 이미지 파일을 선택할 수 있도록 구현하였다.
@@ -131,7 +138,3 @@
 - Panel 컨트롤의 AutoScroll 속성을 활용하여, 이미지가 화면보다 큰 경우 스크롤을 통해 전체 이미지를 확인할 수 있도록 구성하였다.
 - 확대/축소 기능은 TrackBar를 이용하여 구현하였으며, 값 변경 시 PictureBox의 크기를 비율에 맞게 조정하도록 처리하였다.
 - 확대/축소 시에도 기존 이미지와 그려진 도형이 유지되도록 Bitmap을 기반으로 처리하였다.
-
-
-
-
