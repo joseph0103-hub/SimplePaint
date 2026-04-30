@@ -15,17 +15,21 @@ namespace SimplePaint
         private bool isDrawing = false;
         private Point startPoint;
         private Point currentPoint;
+        private Bitmap originalBitmap = null!;
+        private float zoomRatio = 1.0f;
 
         public Form1()
         {
             InitializeComponent();
         }
 
-        private void Form1_Load(object? sender, EventArgs e)
+        private void Form1_Load(object sender, EventArgs e)
         {
             cmbColor.SelectedIndex = 0;
             SelectShape(DrawShape.Line);
             CreateBlankCanvas(picCanvas.Width, picCanvas.Height);
+            originalBitmap = (Bitmap)canvasBitmap.Clone();
+            ApplyZoom();
         }
 
         private void SelectShape(DrawShape shape)
@@ -36,33 +40,60 @@ namespace SimplePaint
             btnCircle.BackColor = shape == DrawShape.Circle ? Color.LightSkyBlue : SystemColors.Control;
         }
 
-        private void btnLine_Click(object? sender, EventArgs e) => SelectShape(DrawShape.Line);
-        private void btnRectangle_Click(object? sender, EventArgs e) => SelectShape(DrawShape.Rectangle);
-        private void btnCircle_Click(object? sender, EventArgs e) => SelectShape(DrawShape.Circle);
+        private void btnLine_Click(object sender, EventArgs e) => SelectShape(DrawShape.Line);
+        private void btnRectangle_Click(object sender, EventArgs e) => SelectShape(DrawShape.Rectangle);
+        private void btnCircle_Click(object sender, EventArgs e) => SelectShape(DrawShape.Circle);
 
-        private void cmbColor_SelectedIndexChanged(object? sender, EventArgs e)
+        private void cmbColor_SelectedIndexChanged(object sender, EventArgs e)
         {
-            selectedColor = cmbColor.SelectedIndex switch
+            if (cmbColor.SelectedIndex == 1)
             {
-                1 => Color.Red,
-                2 => Color.Blue,
-                3 => Color.Green,
-                _ => Color.Black
-            };
+                selectedColor = Color.Red;
+            }
+            else if (cmbColor.SelectedIndex == 2)
+            {
+                selectedColor = Color.Blue;
+            }
+            else if (cmbColor.SelectedIndex == 3)
+            {
+                selectedColor = Color.Green;
+            }
+            else
+            {
+                selectedColor = Color.Black;
+            }
         }
 
-        private void trbLineWidth_ValueChanged(object? sender, EventArgs e)
+        private void trbLineWidth_ValueChanged(object sender, EventArgs e)
         {
             selectedLineWidth = trbLineWidth.Value;
         }
 
-        private void btnOpenFile_Click(object? sender, EventArgs e)
+        private void btnOpenFile_Click(object sender, EventArgs e)
         {
+            using OpenFileDialog ofd = new OpenFileDialog();
+            ofd.Title = "이미지 열기";
+            ofd.Filter = "이미지 파일 (*.png;*.jpg;*.jpeg;*.bmp)|*.png;*.jpg;*.jpeg;*.bmp";
+
+            if (ofd.ShowDialog() == DialogResult.OK)
+            {
+                using Image loaded = Image.FromFile(ofd.FileName);
+                canvasBitmap?.Dispose();
+                originalBitmap?.Dispose();
+                canvasBitmap = new Bitmap(loaded.Width, loaded.Height);
+                using (Graphics g = Graphics.FromImage(canvasBitmap))
+                {
+                    g.DrawImage(loaded, 0, 0, loaded.Width, loaded.Height);
+                }
+                originalBitmap = (Bitmap)canvasBitmap.Clone();
+                ApplyZoom();
+            }
         }
 
-        private void btnSaveFile_Click(object? sender, EventArgs e)
+        private void btnSaveFile_Click(object sender, EventArgs e)
         {
-            using SaveFileDialog sfd = new SaveFileDialog();
+            SaveFileDialog sfd = new SaveFileDialog();
+
             sfd.Title = "그림 저장";
             sfd.Filter = "PNG 파일 (*.png)|*.png|JPG 파일 (*.jpg)|*.jpg|BMP 파일 (*.bmp)|*.bmp";
             sfd.FileName = "simplepaint";
@@ -89,37 +120,46 @@ namespace SimplePaint
                 }
 
                 canvasBitmap.Save(sfd.FileName, format);
+
                 MessageBox.Show("이미지 파일로 저장했습니다.");
             }
         }
 
-        private void picCanvas_MouseDown(object? sender, MouseEventArgs e)
+        private void picCanvas_MouseDown(object sender, MouseEventArgs e)
         {
             isDrawing = true;
-            startPoint = e.Location;
-            currentPoint = e.Location;
+            startPoint = ToCanvasPoint(e.Location);
+            currentPoint = startPoint;
         }
 
-        private void picCanvas_MouseMove(object? sender, MouseEventArgs e)
+        private void picCanvas_MouseMove(object sender, MouseEventArgs e)
         {
             if (!isDrawing) return;
-            currentPoint = e.Location;
+            currentPoint = ToCanvasPoint(e.Location);
             picCanvas.Invalidate();
         }
 
-        private void picCanvas_MouseUp(object? sender, MouseEventArgs e)
+        private void picCanvas_MouseUp(object sender, MouseEventArgs e)
         {
             if (!isDrawing) return;
             isDrawing = false;
-            currentPoint = e.Location;
+            currentPoint = ToCanvasPoint(e.Location);
             using Graphics g = Graphics.FromImage(canvasBitmap);
             DrawSelectedShape(g, startPoint, currentPoint);
+            originalBitmap?.Dispose();
+            originalBitmap = (Bitmap)canvasBitmap.Clone();
             picCanvas.Invalidate();
         }
 
-        private void picCanvas_Paint(object? sender, PaintEventArgs e)
+        private void picCanvas_Paint(object sender, PaintEventArgs e)
         {
+            if (canvasBitmap != null)
+            {
+                e.Graphics.DrawImage(canvasBitmap, new Rectangle(0, 0, picCanvas.Width, picCanvas.Height));
+            }
+
             if (!isDrawing) return;
+            e.Graphics.ScaleTransform(zoomRatio, zoomRatio);
             DrawSelectedShape(e.Graphics, startPoint, currentPoint);
         }
 
@@ -153,6 +193,27 @@ namespace SimplePaint
                     g.DrawEllipse(pen, rect);
                     break;
             }
+        }
+
+        private Point ToCanvasPoint(Point displayPoint)
+        {
+            return new Point((int)(displayPoint.X / zoomRatio), (int)(displayPoint.Y / zoomRatio));
+        }
+
+        private void ApplyZoom()
+        {
+            if (canvasBitmap == null) return;
+            picCanvas.Width = (int)(canvasBitmap.Width * zoomRatio);
+            picCanvas.Height = (int)(canvasBitmap.Height * zoomRatio);
+            picCanvas.Image = null;
+            lblZoom.Text = $"{trbZoom.Value}%";
+            picCanvas.Invalidate();
+        }
+
+        private void trbZoom_ValueChanged(object sender, EventArgs e)
+        {
+            zoomRatio = trbZoom.Value / 100f;
+            ApplyZoom();
         }
     }
 }

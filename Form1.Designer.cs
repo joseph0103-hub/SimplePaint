@@ -18,6 +18,10 @@ namespace SimplePaint
         private Button btnOpenFile;
         private Button btnSaveFile;
         private PictureBox picCanvas;
+        private Panel pnlCanvas;
+        private GroupBox grpZoom;
+        private TrackBar trbZoom;
+        private Label lblZoom;
 
         protected override void Dispose(bool disposing)
         {
@@ -40,12 +44,19 @@ namespace SimplePaint
             btnOpenFile = new Button();
             btnSaveFile = new Button();
             picCanvas = new PictureBox();
+            pnlCanvas = new Panel();
+            grpZoom = new GroupBox();
+            trbZoom = new TrackBar();
+            lblZoom = new Label();
 
             grpShape.SuspendLayout();
             grpColor.SuspendLayout();
             grpLineWidth.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)trbLineWidth).BeginInit();
             ((System.ComponentModel.ISupportInitialize)picCanvas).BeginInit();
+            pnlCanvas.SuspendLayout();
+            grpZoom.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)trbZoom).BeginInit();
 
             SuspendLayout();
 
@@ -116,7 +127,7 @@ namespace SimplePaint
             trbLineWidth.ValueChanged += trbLineWidth_ValueChanged;
 
             btnOpenFile.BackColor = Color.LightYellow;
-            btnOpenFile.Location = new Point(450, 84);
+            btnOpenFile.Location = new Point(580, 84);
             btnOpenFile.Name = "btnOpenFile";
             btnOpenFile.Size = new Size(48, 60);
             btnOpenFile.Text = "열기";
@@ -124,17 +135,38 @@ namespace SimplePaint
             btnOpenFile.Click += btnOpenFile_Click;
 
             btnSaveFile.BackColor = Color.PaleTurquoise;
-            btnSaveFile.Location = new Point(506, 84);
+            btnSaveFile.Location = new Point(636, 84);
             btnSaveFile.Name = "btnSaveFile";
             btnSaveFile.Size = new Size(48, 60);
             btnSaveFile.Text = "저장";
             btnSaveFile.UseVisualStyleBackColor = false;
             btnSaveFile.Click += btnSaveFile_Click;
 
+            grpZoom.Controls.Add(lblZoom);
+            grpZoom.Controls.Add(trbZoom);
+            grpZoom.Location = new Point(450, 72);
+            grpZoom.Name = "grpZoom";
+            grpZoom.Size = new Size(120, 72);
+            grpZoom.Text = "확대/축소";
+
+            trbZoom.Location = new Point(6, 22);
+            trbZoom.Name = "trbZoom";
+            trbZoom.Minimum = 25;
+            trbZoom.Maximum = 200;
+            trbZoom.TickFrequency = 25;
+            trbZoom.Value = 100;
+            trbZoom.Size = new Size(108, 45);
+            trbZoom.ValueChanged += trbZoom_ValueChanged;
+
+            lblZoom.AutoSize = true;
+            lblZoom.Location = new Point(42, 50);
+            lblZoom.Name = "lblZoom";
+            lblZoom.Text = "100%";
+
 
             picCanvas.BackColor = Color.White;
             picCanvas.BorderStyle = BorderStyle.FixedSingle;
-            picCanvas.Location = new Point(16, 160);
+            picCanvas.Location = new Point(0, 0);
             picCanvas.Name = "picCanvas";
             picCanvas.Size = new Size(538, 330);
             picCanvas.TabStop = false;
@@ -143,11 +175,18 @@ namespace SimplePaint
             picCanvas.MouseMove += picCanvas_MouseMove;
             picCanvas.MouseUp += picCanvas_MouseUp;
 
+            pnlCanvas.AutoScroll = true;
+            pnlCanvas.BorderStyle = BorderStyle.FixedSingle;
+            pnlCanvas.Controls.Add(picCanvas);
+            pnlCanvas.Location = new Point(16, 160);
+            pnlCanvas.Name = "pnlCanvas";
+            pnlCanvas.Size = new Size(672, 400);
 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(570, 510);
-            Controls.Add(picCanvas);
+            ClientSize = new Size(704, 578);
+            Controls.Add(pnlCanvas);
+            Controls.Add(grpZoom);
             Controls.Add(btnSaveFile);
             Controls.Add(btnOpenFile);
             Controls.Add(grpLineWidth);
@@ -163,6 +202,10 @@ namespace SimplePaint
             grpLineWidth.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)trbLineWidth).EndInit();
             ((System.ComponentModel.ISupportInitialize)picCanvas).EndInit();
+            pnlCanvas.ResumeLayout(false);
+            grpZoom.ResumeLayout(false);
+            grpZoom.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)trbZoom).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }
